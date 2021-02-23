@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<div sec:authorize="hasAuthority('MANAGER')">
+	<div class="container">
+		<div class="row">
+			<div class="col">
+				<a th:href="@{/authenticated/managers/orders}"
+				   th:text="#{link.viewUndefinedOrders}"></a></div>
+			<div class="col">
+				<a th:href="@{/authenticated/managers/orders?approvalState=APPROVED}"
+				   th:text="#{link.viewApprovedOrders}"></a></div>
+			<div class="col">
+				<a th:href="@{/authenticated/managers/orders?approvalState=DENIED}"
+				   th:text="#{link.viewDeniedOrders}"></a></div>
+		</div>
+	</div>
+	<div class="container">
+		<h3 th:text="#{table.managers.title}"></h3>
+		<hr>
+	</div>
+	<div th:if="${registrationStatus?.equals('error')}">
+		<span class="text-danger" th:text="#{managers.deny.message}"></span>
+	</div>
+	<div class="container">
+		<table class="table table-bordered table-striped">
+			<thead class="thead-dark">
+			<tr>
+				<th th:text="#{table.managers.id}"></th>
+				<th th:text="#{table.managers.order}"></th>
+				<th th:text="#{table.managers.message}"></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="order : ${session.currentOrders}">
+				<td><span th:text="${order.id}">  </span></td>
+				<td>
+					<div><label class="text-warning"
+								th:text="#{table.orderStatus}"></label><span th:text="${order.approvalState}">  </span>
+					</div>
+					<div><label class="text-info"
+								th:text="#{table.carBrand}"></label><span th:text="${order.car.brand}">  </span></div>
+					<div><label class="text-info"
+								th:text="#{table.carName}"></label><span th:text="${order.car.name}">  </span></div>
+					<div><label class="text-info" th:text="#{table.userFName}"></label>
+						<span th:text="${order.user.firstName}"></span></div>
+					<div><label class="text-info"
+								th:text="#{table.userLName}"></label><span th:text="${order.user.lastName}"></span>
+					</div>
+					<div><label class="text-info"
+								th:text="#{table.userEmail}"></label><span th:text="${order.user.email}"></span></div>
+					<div><label class="text-info"
+								th:text="#{table.totalPrice}"></label><span th:text="${order.totalPrice}"></span></div>
+					<div><label class="text-info"
+								th:text="#{table.dateRange}"></label><span th:text="${#temporals.format(order.dateRange.dateFrom, session.locale)}"> </span><span
+						th:text="${#temporals.format(order.dateRange.dateTo, session.locale)}"> </span></div>
+				</td>
+				<td>
+					<form th:action="@{/authenticated/managers/orders/deny(orderId=${order.id})}" method="post">
+						<label>
+							<textarea name="message" cols="60" rows="10"></textarea>
+						</label>
+						<div th:if="${!order.approvalState.equals('DENIED')}">
+							<input class="btn-danger" type="submit" th:value="DENY"></div>
+					</form>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>

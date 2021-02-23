@@ -1,0 +1,9 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<span th:text="${session.order}"></span>
+SUCCESS
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>

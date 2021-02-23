@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<h1 th:text="#{greetings}"></h1>
+<div sec:authorize="isAuthenticated()">
+  This content is only shown to authenticated users.
+  Logged user: <span sec:authentication="name">Bob</span>
+  Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
+  <div sec:authorize="hasAuthority('ADMIN')">
+	This content is only shown to administrators.
+  </div>
+  <div sec:authorize="hasAuthority('USER')">
+	This content is only shown to users.
+  </div>
+</div>
+<div class="form-group" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:text="'ADMIN'">ADMIN TEXT</div>
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>

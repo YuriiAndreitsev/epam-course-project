@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<div class="dropdown">
+	<button class="btn btn-secondary dropdown-toggle" type="button" th:text="'SORT TYPE'" id="dropdownMenuButton"
+			data-bs-toggle="dropdown" aria-expanded="false">
+	</button>
+	<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		<li><a class="dropdown-item" th:href="@{/cars(sort=price)}" th:text="'PRICE'"></a></li>
+		<li><a class="dropdown-item" th:href="@{/cars(sort=name)}" th:text="'NAME'"></a></li>
+	</ul>
+</div>
+<span th:text="#{cars.filter}"></span>
+<div>
+	<ul th:each="car : ${carsByBrand}">
+		<li>
+			<a class="page-link" th:href="@{/cars(brand=${car.brand})}" th:text="${car.getBrand()}"></a></li>
+	</ul>
+</div>
+
+<div class=" container">
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+		<div class="col" th:each="car : ${carPage.content}">
+			<div class="card shadow-sm">
+				<svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+					 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
+					 preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+					<rect width="100%" height="100%" fill="#55595c"/>
+					<text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+				</svg>
+				<div class="card-body">
+					<div>
+						<label class="text-info" th:text="#{car.brand}"> </label>
+						<span class="card-text" th:text="${car.brand}"></span>
+					</div>
+					<div><label class="text-info" th:text="#{car.name}"></label>
+						<span class="card-text" th:text="${car.name}"></span>
+					</div>
+					<div><label class="text-info" th:text="#{car.class}"></label>
+						<span class="card-text" th:text="${car.qualityClass}"></span>
+					</div>
+					<div><label class="text-info" th:text="#{car.price}"></label>
+						<span class="card-text" th:text="${car.price}"></span>
+					</div>
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="btn-group">
+							<div sec:authorize="hasAuthority('ADMIN')">
+								<a type="button"
+								   id="editCarId"
+								   name="editCarId"
+								   th:href="@{/authenticated/admins/edit-car}"
+								   class="btn btn-sm btn-outline-warning"
+								   th:text="#{car.edit}"></a>
+							</div>
+							<div sec:authorize="hasAuthority('USER')">
+								<form th:action="@{/authenticated/rent}" th:method="POST">
+									<input type="hidden" id="carId" name="carId" th:value="${car.id}">
+									<input type="submit" th:value="#{car.rent}"/>
+								</form>
+							</div>
+							<div sec:authorize="isAnonymous()">
+								<a type="button"
+								   th:href="@{/loginPage}"
+								   class="btn btn-sm btn-outline-primary"
+								   th:text="#{car.login}"></a>
+							</div>
+							<!--							<button type="button" class="btn btn-sm btn-outline-secondary" th:text="#{car.details}">-->
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav aria-label="Page navigation example">
+		<ul class="pagination" th:if="${carPage.totalPages > 0}">
+			<li class="page-item" th:class="${pageNumber==(carPage.number + 1)} ? active"
+				th:each="pageNumber : ${pageNumbers}">
+				<a class="page-link" th:text="${pageNumber}"
+				   th:href="@{/cars(size=${carPage.size}, page=${pageNumber}, sort=${sortType}, brand=${brand})}"></a>
+			</li>
+			<!--            <li class="page-item"><a class="page-link" href="#" class="active">Previous</a></li>-->
+			<!--            <li class="page-item"><a class="page-link" href="#">Next</a></li>-->
+		</ul>
+	</nav>
+</div>
+</body>
+
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+
+</html>

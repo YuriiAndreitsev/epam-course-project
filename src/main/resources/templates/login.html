@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<span th:text="#{link.login}"></span>
+<form th:action="@{loginPage}" th:method="POST" th:object="${user}">
+	<input type="text" name="email" placeholder="E-MAIL" required/>
+	<input type="password" name="pass" placeholder="PASSWORD" required/>
+	<span th:text="#{login.remember}"></span>
+	<input type="checkbox" id="remember-me" name="remember-me"/>
+	<input type="submit" th:value="#{link.login}"/> <input type="reset" value="Reset"/>
+</form>
+<div class="alert alert-danger col-xs-offset-1 col-xs-10"
+	 th:if="${param.error!=null}">Invalid email and/or
+	password.
+</div>
+</body>
+</html>

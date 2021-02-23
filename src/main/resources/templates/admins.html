@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+
+<th:block th:switch="${status}">
+	<div th:class="container">
+		<div th:class="row">
+			<span  th:class="text-success" th:case="'updated'" th:text="#{updateSuccessful}"></span>
+			<span th:class="text-success" th:case="'removed'" th:text="#{removedSuccessfully}"></span>
+		</div>
+	</div>
+
+</th:block>
+
+<div sec:authorize="hasAuthority('ADMIN')">
+	<div th:class="container">
+		<a class="btn btn-sm btn-info" th:href="@{/authenticated/admins/administer-cars?new-car=show}"
+		   th:text="#{admin.newCar}"></a>
+		<div th:class="row" th:if="${newCar?.equals('show')}">
+			<form th:action="@{/authenticated/admins/administer-cars/new-car}" th:object="${car}" th:method="POST">
+				<input type="text" th:placeholder="#{placeholder.car.name}" th:field="*{name}">
+				<input type="text" th:placeholder="#{placeholder.car.brand}" th:field="*{brand}">
+				<input type="text" th:placeholder="#{placeholder.car.qualityClass}" th:field="*{qualityClass}">
+				<input type="number" th:placeholder="#{placeholder.car.price}" th:field="*{price}">
+				<input type="submit" th:class="btn-info" th:value="#{admin.add}">
+			</form>
+		</div>
+	</div>
+	<div th:class="container">
+		<div th:class="row">
+			<table class="table table-striped">
+				<thead class="table-dark">
+				<tr>
+					<th th:text="#{table.admins.id}"></th>
+					<th th:text="#{table.admins.car}"></th>
+					<th th:text="#{table.admins.actions}"></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:if="${session.administerCars.isEmpty()}">
+					<td colspan="2"> No Orders Available</td>
+				</tr>
+				<tr th:each="car : ${session.administerCars}">
+					<td><span th:text="${car.id}">  </span></td>
+					<td>
+						<div th:class="row">
+							<div th:class="col-4">
+								<div><label class="text-info"
+											th:text="#{table.carBrand}"></label><span th:text="${car.brand}">  </span>
+								</div>
+								<div><label class="text-info"
+											th:text="#{table.carName}"></label><span th:text="${car.name}">  </span>
+								</div>
+								<div><label class="text-info"
+											th:text="#{table.carQualityClass}"></label><span th:text="${car.qualityClass}"></span>
+								</div>
+								<div><label class="text-info"
+											th:text="#{table.carPrice}"></label><span th:text="${car.price}"></span>
+								</div>
+							</div>
+							<div th:class="col-2" th:if="${car.id==carToEdit?.id&&edit?.equals('edit')}">
+
+								<form th:action="@{/authenticated/admins/administer-cars/edit}"
+									  th:object="${carToEdit}"
+									  th:method="POST">
+										<span class="row"
+											  th:text="#{table.admins.update.title}"></span>
+									<input type="hidden" th:field="*{id}" th:value="${carToEdit.id}">
+									<input type="text" th:placeholder="#{placeholder.car.name}" th:field="*{name}">
+									<input type="text"
+										   th:placeholder="#{placeholder.car.brand}"
+										   th:field="*{brand}">
+									<input type="text"
+										   th:placeholder="#{placeholder.car.qualityClass}"
+										   th:field="*{qualityClass}">
+									<input type="number"
+										   th:placeholder="#{placeholder.car.price}"
+										   th:field="*{price}">
+									<input type="submit" th:class="btn-info" th:value="#{admin.car.editApply}">
+								</form>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div>
+							<a class="btn btn-sm btn-warning"
+							   th:href="@{/authenticated/admins/administer-cars/edit(carId=${car.id})}"
+							   th:text="#{admin.car.edit}"></a></div>
+						<form th:action="@{/authenticated/admins/administer-cars/delete}" method="post">
+							<input type="hidden" th:name="carId" th:value="${car.id}">
+							<input class="btn btn-sm btn-danger" type="submit" th:value="#{admin.car.remove}">
+						</form>
+						<!--						<div>-->
+						<!--							<a class="btn btn-sm btn-danger"-->
+						<!--							   th:href="@{/authenticated/admins/administer-cars/remove(carId=${car.id})}"-->
+						<!--							   th:text="#{admin.car.remove}"></a></div>-->
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>

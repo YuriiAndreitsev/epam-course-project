@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<h1 th:text="#{infoForAuthenticated}"></h1>
+<div sec:authorize="isAuthenticated()">
+    This content is only shown to authenticated users.
+    Logged user: <span sec:authentication="name">Bob</span>
+    Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
+    <div sec:authorize="hasAuthority('ADMIN')">
+        This content is only shown to administrators.
+    </div>
+
+    <div sec:authorize="hasAuthority('USER')">
+        This content is only shown to users.
+    </div>
+</div>
+</body>
+</html>

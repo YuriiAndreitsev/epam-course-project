@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<form th:action="@{/registration}" th:object="${user}"
+      method="post">
+    <div class="form-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" class="form-control" required
+                           placeholder="Your First Name *" th:field="*{firstName}"
+                           th:value="${user.firstName}" value=""/>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" required
+                           placeholder="Last Name *" th:field="*{lastName}" value=""/>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" required
+                           placeholder="E-Mail *" th:field="*{email}" value=""/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="password" class="form-control" required
+                           pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                           placeholder="Your Password *" th:field="*{password}" value=""/>
+                </div>
+                <div class="form-group">
+                    <input name="confirmPass" id="confirmPass" type="password"
+                           class="form-control" required placeholder="Confirm Password *"
+                           value=""/>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btnSubmit">Submit</button>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-md-12" align="center">
+        <div class="form-group">
+            <div th:if="${registrationStatus?.equals('errorConfirmation')}" class="row">
+                <span th:text="#{passwordConfirmation}" class="p-2 mb-3 bg-danger text-white"></span>
+            </div>
+            <div th:if="${denyMessageError?.equals('error')}" class="row">
+                <span th:text="#{emailAlreadyExists}" class="p-2 mb-3 bg-danger text-white"></span>
+                <a th:href="@{/loginPage}" th:text="#{link.login}"class="p-2 mb-3 bg-info text-white"></a>
+            </div>
+            <div th:if="${registrationStatus?.equals('registrationSuccessful')}" class="row">
+                <span th:text="#{registrationSuccessful}"class="p-2 mb-3 bg-success text-white"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

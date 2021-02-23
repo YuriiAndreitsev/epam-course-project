@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+
+<div class="container">
+	<div class="row">
+		<form th:action="@{/authenticated/pay}" th:method="POST">
+			<!--  BANKING PAYMENT HERE	-->
+			<div class="form-group">
+				<div th:text="${session.order.car.getName()}"></div>
+				<div th:text="${session.order.user.getFirstName()}"></div>
+				<div th:text="${session.dateRange.dateFrom}"></div>
+				<div th:text="${session.dateRange.dateTo}"></div>
+				<div th:text="${session.order.getTotalPrice()}"></div>
+			</div>
+			<input type="submit" th:value="'Pay'"/>
+		</form>
+	</div>
+
+</div>
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>

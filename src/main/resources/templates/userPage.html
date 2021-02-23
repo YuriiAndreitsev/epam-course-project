@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<div th:insert="~{fragments/header :: header}" th:align="center"></div>
+<body>
+<div sec:authorize="isAuthenticated()">
+	<h1 th:text="#{greetingsToUser}"></h1>
+	<h1 sec:authentication="name"></h1>
+</div>
+
+<div>
+	<table class="table table-bordered table-striped">
+		<thead class="thead-dark">
+		<tr>
+			<th th:text="#{userTable.order}"></th>
+			<th th:text="#{userTable.message}"></th>
+			<th th:text="#{userTable.actions}"></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:if="${session.usersOrders.isEmpty()}">
+			<td colspan="2"> No Orders Available</td>
+		</tr>
+		<tr th:each="order : ${session.usersOrders}">
+			<td>
+				<div><label class="text-warning"
+							th:text="#{table.orderStatus}"></label><span th:text="${order.approvalState}">  </span>
+				</div>
+				<div th:if="${order.approvalState.equals('APPROVED')}"><label class="text-warning"
+																			  th:text="#{userTable.returnStatus}"></label><span
+					th:text="${order.returned} ? ${order.returned}: 'undefined'"></span>
+				</div>
+				<div><label class="text-info"
+							th:text="#{table.carBrand}"></label><span th:text="${order.car.brand}">  </span></div>
+				<div><label class="text-info"
+							th:text="#{table.carName}"></label><span th:text="${order.car.name}">  </span></div>
+				<div><label class="text-info" th:text="#{table.userFName}"></label>
+					<span th:text="${order.user.firstName}"></span></div>
+				<div><label class="text-info"
+							th:text="#{table.userLName}"></label><span th:text="${order.user.lastName}"></span></div>
+				<div><label class="text-info"
+							th:text="#{table.userEmail}"></label><span th:text="${order.user.email}"></span></div>
+				<div><label class="text-info"
+							th:text="#{table.totalPrice}"></label><span th:text="${order.totalPrice}"></span></div>
+				<div><label class="text-info"
+							th:text="#{table.dateRange}"></label><span th:text="${#temporals.format(order.dateRange.dateFrom, session.locale)}"> </span><span
+					th:text="${#temporals.format(order.dateRange.dateTo, session.locale)}"> </span></div>
+			</td>
+			<td>
+				<div th:if="${order.approvalState.equals('DENIED')}">
+					<span th:text="${order.denyMessage}"></span></div>
+				<div class="font-weight-bold" th:if="${order.refundSum>0}">
+					<span th:text="#{order.refundMessage}"></span>
+					<span th:class="text-danger" th:text="${order.refundSum}"></span></div>
+			</td>
+			<td>
+				<div th:if="${order.approvalState.equals('APPROVED')&&order.returned==false}">
+					<a class="btn btn-sm btn-info"
+					   th:href="@{/authenticated/users/orders/return(orderId=${order.id})}"
+					   th:text="#{order.returnCar}"></a></div>
+				<div th:if="${order.refundSum>0}">
+					<form th:action="@{/authenticated/users/orders/refund(orderId=${order.id})}" method="post">
+						<input type="hidden" th:value="${order.id}" name="orderId">
+						<input type="submit" th:value="#{order.refundDamage}">
+					</form>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+</body>
+<div th:insert="~{fragments/footer :: footer}" th:align="center"></div>
+</html>
